@@ -86,17 +86,64 @@ function ProfileCard() {
         .back-btn:hover { color: #7c4510; transform: translateX(-3px); }
         .avatar { width:64px; height:64px; border-radius:50%; background: linear-gradient(135deg, #f5a623 0%, #c86a1a 100%); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Serif Display',serif; font-size:22px; letter-spacing:1px; box-shadow:0 4px 14px rgba(200,106,26,0.25); }
         .field-label { font-size:10px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#b86e2a; margin-bottom:6px; }
-        .username-display { background:#fdf7f0; border:1.5px solid #f0d9bb; border-radius:10px; padding:10px 14px; color:#2d1a09; font-size:14px; font-weight:500; flex:1; }
-        .edit-btn { background:#fdf7f0; border:1.5px solid #f0d9bb; color:#b86e2a; border-radius:8px; padding:8px 16px; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.15s; }
-        .edit-btn:hover { background:#f5e9d4; border-color:#d4904a; }
-        .input-field { flex:1; border:1.5px solid #f0d9bb; border-radius:10px; padding:10px 14px; font-size:14px; font-family:'DM Sans',sans-serif; color:#2d1a09; outline:none; transition:border 0.15s; background:#fdf7f0; }
+        .username-display {
+  background: #fdf7f0;
+  border: 1.5px solid #f0d9bb;
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #2d1a09;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%;
+  box-sizing: border-box;
+}
+.edit-btn {
+  margin-top: 8px;
+  width: 100%;
+  background: #fdf7f0;
+  border: 1.5px solid #f0d9bb;
+  color: #b86e2a;
+  border-radius: 10px;
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.edit-btn:hover { background: #f5e9d4; border-color: #d4904a; }
+.action-row {
+  display: flex;
+  gap: 8px;
+}
+        .input-field { width: 100%; box-sizing: border-box; flex:1; border:1.5px solid #f0d9bb; border-radius:10px; padding:10px 14px; font-size:14px; font-family:'DM Sans',sans-serif; color:#2d1a09; outline:none; transition:border 0.15s; background:#fdf7f0; }
         .input-field:focus { border-color:#e88030; box-shadow:0 0 0 3px rgba(232,128,48,0.1); }
         .input-field.error { border-color:#ef4444; }
-        .save-btn { background:linear-gradient(135deg,#f5a623,#c86a1a); color:#fff; border:none; border-radius:10px; padding:10px 18px; font-size:12px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:opacity 0.15s; white-space:nowrap; }
-        .save-btn:hover { opacity:0.88; }
-        .save-btn:disabled { opacity:0.5; }
-        .cancel-btn { background:#f3ede7; border:none; border-radius:10px; padding:10px 14px; font-size:14px; cursor:pointer; color:#7c4510; transition:background 0.15s; }
-        .cancel-btn:hover { background:#eadacb; }
+        .save-btn {
+  flex: 1;
+  background: linear-gradient(135deg, #f5a623, #c86a1a);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: opacity 0.15s;
+}
+.save-btn:hover { opacity: 0.88; }
+.save-btn:disabled { opacity: 0.5; }
+.cancel-btn {
+  background: #f3ede7;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #7c4510;
+  transition: background 0.15s;
+}
+.cancel-btn:hover { background: #eadacb; }
         .divider { height:1px; background:#f5ece0; margin: 16px 0; }
         .meta-row { display:flex; gap:24px; }
         .meta-item { display:flex; flex-direction:column; gap:2px; }
@@ -124,29 +171,29 @@ function ProfileCard() {
             </p>
           </div>
         </div>
-
         <div className="divider" />
+        // Username section — replace the existing username block with this:
         <div>
           <p className="field-label">Username</p>
 
           {!isEditing ? (
-            <div className="flex items-center gap-2">
+            <>
               <div className="username-display">@{user.username}</div>
               <button className="edit-btn" onClick={handleEditClick}>
-                Edit
+                Edit username
               </button>
-            </div>
+            </>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <div className="flex gap-2">
-                <input
-                  className={`input-field${error ? " error" : ""}`}
-                  value={inputValue}
-                  onChange={handleInputChange}
-                  disabled={saving}
-                  placeholder="new username"
-                  autoFocus
-                />
+              <input
+                className={`input-field${error ? " error" : ""}`}
+                value={inputValue}
+                onChange={handleInputChange}
+                disabled={saving}
+                placeholder="new username"
+                autoFocus
+              />
+              <div className="action-row">
                 <button
                   className="save-btn"
                   onClick={handleSave}
@@ -155,7 +202,7 @@ function ProfileCard() {
                   {saving ? "Saving…" : "Save"}
                 </button>
                 <button className="cancel-btn" onClick={handleCancel}>
-                  ✕
+                  Cancel
                 </button>
               </div>
               {error && (
