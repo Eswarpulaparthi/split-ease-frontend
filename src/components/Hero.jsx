@@ -1,4 +1,4 @@
-import { EXPENSE_ROWS } from "../constants";
+import { EXPENSE_ROWS } from "../constants.js";
 import { useNavigate } from "react-router-dom";
 export default function Hero() {
   const navigate = useNavigate();

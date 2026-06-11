@@ -1,4 +1,4 @@
-import { FOOTER_COLS } from "../constants";
+import { FOOTER_COLS } from "../constants.js";
 
 export default function CTAFooter() {
   return (

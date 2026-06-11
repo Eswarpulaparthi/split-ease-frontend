@@ -1,10 +1,10 @@
-import Navbar from "../components/Navbar";
-import Hero from "../components/Hero";
-import Features from "../components/Features";
-import HowItWorks from "../components/HowItWorks";
-import UseCases from "../components/UseCases";
-import FAQ from "../components/FAQ";
-import CTAFooter from "../components/CTAFooter";
+import Navbar from "../components/Navbar.jsx";
+import Hero from "../components/Hero.jsx";
+import Features from "../components/Features.jsx";
+import HowItWorks from "../components/HowItworks.jsx";
+import UseCases from "../components/Usecases.jsx";
+import FAQ from "../components/Faq.jsx";
+import CTAFooter from "../components/Ctafooter.jsx";
 
 export default function HomePage() {
   return (

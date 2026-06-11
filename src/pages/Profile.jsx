@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import BackButton from "../components/BackButton";
+import { useAuth } from "../context/AuthContext.jsx";
+import BackButton from "../components/BackButton.jsx";
 
 function ProfileCard() {
   const [isEditing, setIsEditing] = useState(false);

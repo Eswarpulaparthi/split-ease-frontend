@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FAQS } from "../constants";
+import { FAQS } from "../constants.js";
 
 export default function FAQ() {
   const [openFaq, setOpenFaq] = useState(null);

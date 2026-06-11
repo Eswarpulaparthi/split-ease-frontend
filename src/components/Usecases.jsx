@@ -1,4 +1,4 @@
-import { USE_CASES } from "../constants";
+import { USE_CASES } from "../constants.js";
 
 export default function UseCases() {
   return (

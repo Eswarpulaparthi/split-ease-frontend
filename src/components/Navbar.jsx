@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import LoginModal from "./Loginmodel";
-import { NAV_LINKS } from "../constants";
-import { useAuth } from "../context/AuthContext";
+import LoginModal from "./Loginmodel.jsx";
+import { NAV_LINKS } from "../constants.js";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Navbar() {
   const [showLogin, setShowLogin] = useState(false);

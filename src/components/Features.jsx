@@ -1,4 +1,4 @@
-import { FEATURES } from "../constants";
+import { FEATURES } from "../constants.js";
 
 export default function Features() {
   return (

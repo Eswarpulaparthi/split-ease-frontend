@@ -1,4 +1,4 @@
-import { STEPS } from "../constants";
+import { STEPS } from "../constants.js";
 
 export default function HowItWorks() {
   return (

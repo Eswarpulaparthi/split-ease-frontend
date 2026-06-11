@@ -1,5 +1,5 @@
-import { ProtectedRoute } from "./ProtectedRoutes";
-import Sidebar from "./SideBar";
+import { ProtectedRoute } from "./ProtectedRoutes.jsx";
+import Sidebar from "./SideBar.jsx";
 import { Outlet } from "react-router-dom";
 
 export function ProtectedLayout() {

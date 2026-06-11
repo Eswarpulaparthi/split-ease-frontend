@@ -1,12 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
-import { ProtectedLayout } from "./layouts/ProtectedLayout";
-import HomePage from "./pages/Home";
-import DashBoardApp from "./pages/Dashboard";
-import OAuthSuccess from "./pages/OAuthSuccess";
-import ProfileCard from "./pages/Profile";
-import SearchUser from "./pages/SearchUser";
-import Groups from "./pages/Groups";
+import { AuthProvider } from "./context/AuthContext.jsx";
+import { ProtectedLayout } from "./layouts/ProtectedLayout.jsx";
+import HomePage from "./pages/Home.jsx";
+import DashBoardApp from "./pages/Dashboard.jsx";
+import OAuthSuccess from "./pages/OAuthSuccess.jsx";
+import ProfileCard from "./pages/Profile.jsx";
+import SearchUser from "./pages/SearchUser.jsx";
+import Groups from "./pages/Groups.jsx";
 
 function App() {
   return (
