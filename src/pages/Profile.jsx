@@ -172,7 +172,6 @@ function ProfileCard() {
           </div>
         </div>
         <div className="divider" />
-        // Username section — replace the existing username block with this:
         <div>
           <p className="field-label">Username</p>
 
