@@ -40,7 +40,6 @@ function Dashboard() {
         setNotifications(data);
       }
     };
-    notificationData();
   }, []);
 
   const handleAccept = async (notifId, senderId) => {
