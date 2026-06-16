@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 function SearchUser() {
   const { username } = useParams();
   const [userInfo, setUserInfo] = useState(null);
+  const [isFriend, setIsFriend] = useState(false);
+  const [friendsCount, setFriendsCount] = useState(0);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
@@ -28,16 +30,22 @@ function SearchUser() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await fetch(`${backend_uri}/api/user/${username}`, {
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await fetch(`${backend_uri}/api/check-friend`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username }),
         });
-        if (res.ok) {
-          const data = await res.json();
-          console.log(data._id);
-          setUserInfo(data);
-        } else {
+        if (!res.ok) {
           setError(true);
+          return;
         }
+        const data = await res.json();
+        setUserInfo(data.user);
+        setIsFriend(data.isFriend);
+        setFriendsCount(data.totalFriendsCount);
       } catch (err) {
         setError(true);
       } finally {
@@ -79,12 +87,21 @@ function SearchUser() {
           </div>
         </div>
 
-        <button
-          onClick={handleFriendRequest}
-          className="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-1.5 rounded-lg w-full transition-colors"
-        >
-          Add Friend
-        </button>
+        {isFriend ? (
+          <button
+            disabled
+            className="bg-green-500 text-white text-sm font-semibold px-4 py-1.5 rounded-lg w-full cursor-not-allowed"
+          >
+            Friends
+          </button>
+        ) : (
+          <button
+            onClick={handleFriendRequest}
+            className="bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-1.5 rounded-lg w-full transition-colors"
+          >
+            Add Friend
+          </button>
+        )}
 
         <div className="h-px bg-gray-100" />
 
@@ -94,8 +111,8 @@ function SearchUser() {
           </p>
 
           <p className="text-sm text-gray-500">
-            {userInfo?.friends?.length
-              ? `${userInfo.friends.length} friend${userInfo.friends.length > 1 ? "s" : ""}`
+            {friendsCount
+              ? `${friendsCount} friend${friendsCount > 1 ? "s" : ""}`
               : "No friends yet."}
           </p>
         </div>
