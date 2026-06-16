@@ -44,16 +44,25 @@ function Dashboard() {
   }, []);
 
   const handleAccept = async (notifId, senderId) => {
-    const res = await fetch(`${backend_uri}/api/add-friend`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ friendId: senderId, notifId }),
-    });
-    if (res.ok) {
-      console.log(await res.json());
+    try {
+      const res = await fetch(`${backend_uri}/api/add-friend`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          friendId: senderId,
+          notifId,
+        }),
+      });
+      if (res.ok) {
+        setNotifications((prev) =>
+          prev.filter((notif) => notif._id !== notifId),
+        );
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
