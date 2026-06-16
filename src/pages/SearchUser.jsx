@@ -19,8 +19,7 @@ function SearchUser() {
         body: JSON.stringify({ friendId: userInfo._id }),
       });
       if (res.ok) {
-        const data = await res.json();
-        console.log(data);
+        window.history.back();
       }
     } catch (err) {
       console.log(err);
@@ -93,25 +92,12 @@ function SearchUser() {
           <p className="text-xs text-gray-500 uppercase tracking-wide mb-3 font-medium">
             Friends
           </p>
-          {userInfo?.friends?.length > 0 ? (
-            <ul className="space-y-2">
-              {userInfo.friends.map((friend, i) => (
-                <li
-                  key={i}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 hover:bg-orange-50 transition-colors"
-                >
-                  <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 text-xs font-semibold">
-                    {friend?.username?.[0]?.toUpperCase() ?? "?"}
-                  </div>
-                  <span className="text-sm text-gray-900">
-                    @{friend?.username ?? "unknown"}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-gray-500">No friends yet.</p>
-          )}
+
+          <p className="text-sm text-gray-500">
+            {userInfo?.friends?.length
+              ? `${userInfo.friends.length} friend${userInfo.friends.length > 1 ? "s" : ""}`
+              : "No friends yet."}
+          </p>
         </div>
       </div>
     </div>

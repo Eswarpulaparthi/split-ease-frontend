@@ -15,7 +15,7 @@ function Dashboard() {
   const backend_uri = import.meta.env.VITE_BACKEND_URI;
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (query.length > 1) fetchSuggestions(query);
+      if (query.length >= 1) fetchSuggestions(query);
       else setSuggestions([]);
     }, 300);
     return () => clearTimeout(timer);
