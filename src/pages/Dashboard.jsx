@@ -115,19 +115,18 @@ function Dashboard() {
   const initial = user?.username?.[0]?.toUpperCase() ?? "?";
 
   return (
-    <div className="flex items-center gap-3 px-5 py-3 bg-white border-b border-gray-100">
-      {/* Search */}
-      <div className="relative flex-1 max-w-sm">
+    <div className="flex flex-wrap items-center gap-2 sm:gap-3 px-3 sm:px-5 py-3 bg-white border-b border-gray-100">
+      <div className="relative flex-1 min-w-[180px] sm:min-w-[250px] max-w-md">
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search users..."
-          className="w-full pl-9 pr-3 py-2 text-sm bg-gray-50 border border-gray-100 rounded-xl"
+          className="w-full px-3 py-2 text-sm sm:text-base bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-200"
         />
 
         {suggestions.length > 0 && (
-          <ul className="absolute top-[calc(100%+6px)] left-0 right-0 bg-white rounded-xl border border-gray-100 shadow-lg overflow-hidden z-50">
+          <ul className="absolute top-[calc(100%+6px)] left-0 right-0 max-h-64 overflow-y-auto bg-white rounded-xl border border-gray-100 shadow-lg z-50">
             {suggestions.map((item) => (
               <li key={item._id}>
                 <Link
@@ -170,7 +169,21 @@ function Dashboard() {
         </button>
 
         {showNotif && (
-          <div className="absolute top-[calc(100%+8px)] right-0 w-64 bg-white rounded-2xl border border-gray-100 shadow-lg z-50 overflow-hidden">
+          <div
+            className="
+    absolute top-[calc(100%+8px)]
+    right-0
+    w-[90vw]
+    max-w-sm
+    sm:w-80
+    bg-white
+    rounded-2xl
+    border border-gray-100
+    shadow-lg
+    z-50
+    overflow-hidden
+  "
+          >
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
               <span className="text-sm font-semibold text-gray-800">
                 Notifications
@@ -189,10 +202,10 @@ function Dashboard() {
               notifications.map((n) => (
                 <div
                   key={n._id}
-                  className="flex items-start gap-3 px-4 py-3 hover:bg-orange-50 border-b border-gray-50 last:border-0"
+                  className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 hover:bg-orange-50 border-b border-gray-50 last:border-0"
                 >
                   <div className="flex-1">
-                    <p className="text-xs text-gray-700">
+                    <p className="text-xs sm:text-sm text-gray-700 break-words">
                       <span className="font-semibold">
                         @{n.sender.username}
                       </span>{" "}
@@ -202,7 +215,7 @@ function Dashboard() {
 
                   <button
                     onClick={() => handleAccept(n._id, n.sender._id)}
-                    className="w-7 h-7 rounded-lg bg-green-100 text-green-600 hover:bg-green-200"
+                    className="flex-shrink-0 w-8 h-8 rounded-lg bg-green-100 text-green-600 hover:bg-green-200 transition"
                   >
                     ✓
                   </button>
@@ -215,12 +228,12 @@ function Dashboard() {
 
       {/* User */}
       <div className="relative" ref={menuRef}>
-        <button className="flex items-center gap-2 rounded-xl px-2.5 py-1.5 bg-orange-50">
-          <div className="w-7 h-7 rounded-xl bg-orange-500 flex items-center justify-center text-white text-sm font-bold">
+        <button className="flex items-center gap-2 rounded-xl px-2 sm:px-3 py-1.5 bg-orange-50">
+          <div className="w-8 h-8 rounded-xl bg-orange-500 flex items-center justify-center text-white text-sm font-bold">
             {initial}
           </div>
 
-          <span className="text-sm font-semibold text-gray-800 hidden sm:block">
+          <span className="hidden md:block text-sm font-semibold text-gray-800 max-w-[120px] truncate">
             {user?.username}
           </span>
         </button>
