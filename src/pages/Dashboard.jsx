@@ -239,7 +239,6 @@ function Dashboard() {
           </span>
         </button>
       </div>
-      <Groups />
     </div>
   );
 }
