@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
+const navigate = useNavigate();
 function Groups() {
   const [adminGroups, setAdminGroups] = useState([]);
   const [joinedGroups, setJoinedGroups] = useState([]);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [groupName, setGroupName] = useState("");
+  const [creating, setCreating] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const backend_uri = import.meta.env.VITE_BACKEND_URI;
@@ -39,6 +44,38 @@ function Groups() {
     fetchGroups();
   }, []);
 
+  const createGroup = async () => {
+    if (!groupName.trim()) return;
+
+    try {
+      setCreating(true);
+
+      const res = await fetch(`${backend_uri}/api/create-group`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          groupName,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) return;
+
+      setAdminGroups((prev) => [...prev, data.adminGroup]);
+
+      setGroupName("");
+      setShowCreateModal(false);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setCreating(false);
+    }
+  };
+
   const totalGroups = adminGroups.length + joinedGroups.length;
 
   return (
@@ -55,8 +92,11 @@ function Groups() {
             </p>
           </div>
 
-          <button className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-xl font-medium transition">
-            + Create Group
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl text-sm font-medium transition"
+          >
+            Create Group
           </button>
         </div>
 
@@ -158,6 +198,47 @@ function Groups() {
       </div>
     </div>
   );
+  {
+    showCreateModal && (
+      <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
+          <div className="p-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Create New Group
+            </h2>
+
+            <input
+              type="text"
+              value={groupName}
+              onChange={(e) => setGroupName(e.target.value)}
+              placeholder="Enter group name"
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-300"
+            />
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => {
+                  setShowCreateModal(false);
+                  setGroupName("");
+                }}
+                className="flex-1 py-3 rounded-xl border border-gray-200 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                disabled={creating}
+                onClick={createGroup}
+                className="flex-1 py-3 rounded-xl bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50"
+              >
+                {creating ? "Creating..." : "Create"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default Groups;
