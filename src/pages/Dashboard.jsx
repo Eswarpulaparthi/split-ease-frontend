@@ -190,10 +190,10 @@ function Dashboard() {
     const fetchGroups = async () => {
       try {
         const [adminRes, joinedRes] = await Promise.all([
-          fetch(`${backend_uri}/api/admin-groups`, {
+          fetch(`${backend_uri}/admin-groups`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          fetch(`${backend_uri}/api/normal-groups`, {
+          fetch(`${backend_uri}/normal-groups`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -250,7 +250,7 @@ function Dashboard() {
     if (!groupName.trim()) return;
     try {
       setCreating(true);
-      const res = await fetch(`${backend_uri}/api/create-group`, {
+      const res = await fetch(`${backend_uri}/create-group`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -278,16 +278,6 @@ function Dashboard() {
       {/* ── Navbar ─────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-40 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
-          {/* Wordmark */}
-          <Link to="/" className="flex items-center gap-2 mr-2 flex-shrink-0">
-            <div className="w-7 h-7 rounded-lg bg-orange-500 flex items-center justify-center text-white text-xs font-bold">
-              S
-            </div>
-            <span className="font-bold text-gray-900 text-sm hidden sm:block">
-              SplitEase
-            </span>
-          </Link>
-
           {/* Search */}
           <div className="relative flex-1 max-w-sm">
             <input
