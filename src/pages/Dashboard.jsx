@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
+import Groups from "./Groups.jsx";
 
 function Dashboard() {
   const [query, setQuery] = useState("");
@@ -238,6 +239,7 @@ function Dashboard() {
           </span>
         </button>
       </div>
+      <Groups />
     </div>
   );
 }
