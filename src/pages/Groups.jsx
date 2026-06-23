@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 const PlusIcon = () => (
   <svg
     width="16"
@@ -48,38 +48,32 @@ const ShieldIcon = () => (
   </svg>
 );
 
-const GroupCard = ({ group, isAdmin }) => (
-  <div className="bg-white rounded-2xl border border-gray-100 p-5 hover:border-orange-200 hover:shadow-md transition cursor-pointer">
-    <div className="flex items-start justify-between mb-4">
-      <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500">
-        <UsersIcon />
+const GroupCard = ({ group, isAdmin, onClick }) => (
+  <div
+    onClick={onClick}
+    className="bg-white border border-gray-200 rounded-xl p-4 hover:bg-gray-50 transition cursor-pointer"
+  >
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="w-11 h-11 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 shrink-0">
+          <UsersIcon />
+        </div>
+
+        <div className="min-w-0">
+          <h3 className="font-medium text-gray-900 truncate">{group.name}</h3>
+
+          <p className="text-xs text-gray-500 mt-0.5">
+            {group.members?.length || 0} members
+          </p>
+        </div>
       </div>
 
       {isAdmin && (
-        <span className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-orange-50 text-orange-500 font-semibold">
-          <ShieldIcon />
+        <span className="text-[11px] font-medium text-orange-600 bg-orange-50 px-2 py-1 rounded-full">
           Admin
         </span>
       )}
     </div>
-
-    <h3 className="font-semibold text-gray-900 text-sm truncate">
-      {group.name}
-    </h3>
-
-    <p className="text-xs text-gray-400 mt-1">
-      {group.members?.length ?? 0} members
-    </p>
-  </div>
-);
-
-const StatCard = ({ label, value, accent }) => (
-  <div className="bg-white rounded-2xl p-5 border border-gray-100">
-    <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">
-      {label}
-    </p>
-
-    <p className={`text-3xl font-bold ${accent}`}>{value}</p>
   </div>
 );
 
@@ -102,6 +96,7 @@ const EmptyState = ({ message }) => (
 function Groups() {
   const backend_uri = import.meta.env.VITE_BACKEND_URI;
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   const [adminGroups, setAdminGroups] = useState([]);
   const [joinedGroups, setJoinedGroups] = useState([]);
@@ -179,52 +174,22 @@ function Groups() {
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <p className="text-xs font-semibold text-orange-500 uppercase tracking-widest mb-1">
-              Groups
-            </p>
+            <h1 className="text-2xl font-bold text-gray-900">Groups</h1>
 
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Manage Your Groups
-            </h1>
-
-            <p className="text-sm text-gray-400 mt-1">
-              Create groups and manage shared expenses.
+            <p className="text-sm text-gray-500 mt-1">
+              Create groups and split expenses together.
             </p>
           </div>
 
           <button
             onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition"
+            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
           >
             <PlusIcon />
             New Group
           </button>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10">
-          <StatCard
-            label="Total Groups"
-            value={totalGroups}
-            accent="text-gray-900"
-          />
-
-          <StatCard
-            label="Admin"
-            value={adminGroups.length}
-            accent="text-orange-500"
-          />
-
-          <StatCard
-            label="Joined"
-            value={joinedGroups.length}
-            accent="text-gray-900"
-          />
-
-          <StatCard label="Status" value="Active" accent="text-green-500" />
         </div>
 
         {/* Admin Groups */}
@@ -235,9 +200,14 @@ function Groups() {
         ) : adminGroups.length === 0 ? (
           <EmptyState message="You haven't created any groups yet." />
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+          <div className="space-y-3 mb-10">
             {adminGroups.map((group) => (
-              <GroupCard key={group._id} group={group} isAdmin />
+              <GroupCard
+                key={group._id}
+                group={group}
+                isAdmin
+                onClick={() => navigate(`/group/${group._id}`)}
+              />
             ))}
           </div>
         )}
@@ -248,9 +218,13 @@ function Groups() {
         {joinedGroups.length === 0 ? (
           <EmptyState message="You haven't joined any groups yet." />
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="space-y-3">
             {joinedGroups.map((group) => (
-              <GroupCard key={group._id} group={group} />
+              <GroupCard
+                key={group._id}
+                group={group}
+                onClick={() => navigate(`/group/${group._id}`)}
+              />
             ))}
           </div>
         )}

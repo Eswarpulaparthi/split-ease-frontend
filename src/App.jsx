@@ -7,6 +7,7 @@ import OAuthSuccess from "./pages/OAuthSuccess.jsx";
 import ProfileCard from "./pages/Profile.jsx";
 import SearchUser from "./pages/SearchUser.jsx";
 import Groups from "./pages/Groups.jsx";
+import Activity from "./pages/Activity.jsx";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
               <Route path="/profile" element={<ProfileCard />} />
               <Route path="/groups" element={<Groups />} />
               <Route path="/:username" element={<SearchUser />} />
+              <Route path="/group/:groupId" element={<Activity />} />
             </Route>
           </Routes>
         </AuthProvider>
