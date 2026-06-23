@@ -5,7 +5,6 @@ const NAV_ITEMS = [
   { label: "Dashboard", icon: "ti-layout-dashboard" },
   { label: "Groups", icon: "ti-users-group" },
   { label: "Activity", icon: "ti-activity" },
-  { label: "Settlements", icon: "ti-transfer" },
   { label: "Profile", icon: "ti-user-circle" },
 ];
 
