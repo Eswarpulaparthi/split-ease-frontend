@@ -1,220 +1,37 @@
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext.jsx";
-import BackButton from "../components/BackButton.jsx";
+import React from "react";
 
-function ProfileCard() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-
-  const [error, setError] = useState("");
-  const [saving, setSaving] = useState(false);
-
-  const { user, checkAuth } = useAuth();
-  const backend_uri = import.meta.env.VITE_BACKEND_URI;
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    setInputValue(value);
-    setError("");
-  };
-
-  const handleEditClick = () => {
-    setInputValue(user.username);
-    setError("");
-    setIsEditing(true);
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-    setInputValue(user.username);
-    setError("");
-  };
-
-  const handleSave = async () => {
-    const username = inputValue.trim().toLowerCase();
-    if (!username) {
-      setError("Username cannot be empty.");
-      return;
-    }
-    if (username === user.username) {
-      setIsEditing(false);
-      return;
-    }
-    try {
-      setSaving(true);
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${backend_uri}/api/update-username`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username }),
-      });
-
-      if (res.status === 409) {
-        setError("That username was just taken.");
-        return;
-      }
-      if (!res.ok) throw new Error();
-
-      await checkAuth();
-
-      setIsEditing(false);
-      setError("");
-    } catch {
-      setError("Failed to update username.");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const avatar = user.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
+function Profile() {
   return (
-    <div
-      style={{ fontFamily: "'DM Sans', sans-serif", background: "#faf7f4" }}
-      className="min-h-screen flex items-center justify-center p-6"
-    >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
-
-        .card { background: #fff; border-radius: 20px; box-shadow: 0 2px 24px rgba(180,120,60,0.08), 0 1px 4px rgba(0,0,0,0.04); }
-        .back-btn { color: #b86e2a; transition: all 0.18s; display:flex; align-items:center; gap:6px; font-size:13px; font-weight:500; background:none; border:none; cursor:pointer; padding:0; }
-        .back-btn:hover { color: #7c4510; transform: translateX(-3px); }
-        .avatar { width:64px; height:64px; border-radius:50%; background: linear-gradient(135deg, #f5a623 0%, #c86a1a 100%); display:flex; align-items:center; justify-content:center; color:#fff; font-family:'DM Serif Display',serif; font-size:22px; letter-spacing:1px; box-shadow:0 4px 14px rgba(200,106,26,0.25); }
-        .field-label { font-size:10px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#b86e2a; margin-bottom:6px; }
-        .username-display {
-  background: #fdf7f0;
-  border: 1.5px solid #f0d9bb;
-  border-radius: 10px;
-  padding: 10px 14px;
-  color: #2d1a09;
-  font-size: 14px;
-  font-weight: 500;
-  width: 100%;
-  box-sizing: border-box;
-}
-.edit-btn {
-  margin-top: 8px;
-  width: 100%;
-  background: #fdf7f0;
-  border: 1.5px solid #f0d9bb;
-  color: #b86e2a;
-  border-radius: 10px;
-  padding: 10px 0;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.edit-btn:hover { background: #f5e9d4; border-color: #d4904a; }
-.action-row {
-  display: flex;
-  gap: 8px;
-}
-        .input-field { width: 100%; box-sizing: border-box; flex:1; border:1.5px solid #f0d9bb; border-radius:10px; padding:10px 14px; font-size:14px; font-family:'DM Sans',sans-serif; color:#2d1a09; outline:none; transition:border 0.15s; background:#fdf7f0; }
-        .input-field:focus { border-color:#e88030; box-shadow:0 0 0 3px rgba(232,128,48,0.1); }
-        .input-field.error { border-color:#ef4444; }
-        .save-btn {
-  flex: 1;
-  background: linear-gradient(135deg, #f5a623, #c86a1a);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 0;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  transition: opacity 0.15s;
-}
-.save-btn:hover { opacity: 0.88; }
-.save-btn:disabled { opacity: 0.5; }
-.cancel-btn {
-  background: #f3ede7;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 18px;
-  font-size: 13px;
-  cursor: pointer;
-  color: #7c4510;
-  transition: background 0.15s;
-}
-.cancel-btn:hover { background: #eadacb; }
-        .divider { height:1px; background:#f5ece0; margin: 16px 0; }
-        .meta-row { display:flex; gap:24px; }
-        .meta-item { display:flex; flex-direction:column; gap:2px; }
-        .meta-val { font-size:15px; font-weight:600; color:#2d1a09; }
-        .meta-key { font-size:11px; color:#b89070; }
-      `}</style>
-
-      <div className="card w-full max-w-sm p-7">
-        <BackButton />
-        <div className="flex items-center gap-4 mt-5">
-          <div className="avatar">{avatar}</div>
-          <div>
-            <p
-              style={{
-                fontFamily: "'DM Serif Display', serif",
-                fontSize: 20,
-                color: "#1a0e05",
-                lineHeight: 1.2,
-              }}
-            >
-              {user.name}
-            </p>
-            <p style={{ fontSize: 12, color: "#b89070", marginTop: 2 }}>
-              Personal Account
-            </p>
-          </div>
-        </div>
-        <div className="divider" />
-        <div>
-          <p className="field-label">Username</p>
-
-          {!isEditing ? (
-            <>
-              <div className="username-display">@{user.username}</div>
-              <button className="edit-btn" onClick={handleEditClick}>
-                Edit username
-              </button>
-            </>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <input
-                className={`input-field${error ? " error" : ""}`}
-                value={inputValue}
-                onChange={handleInputChange}
-                disabled={saving}
-                placeholder="new username"
-                autoFocus
-              />
-              <div className="action-row">
-                <button
-                  className="save-btn"
-                  onClick={handleSave}
-                  disabled={saving}
-                >
-                  {saving ? "Saving…" : "Save"}
-                </button>
-                <button className="cancel-btn" onClick={handleCancel}>
-                  Cancel
-                </button>
-              </div>
-              {error && (
-                <p style={{ color: "#ef4444", fontSize: 12, marginTop: 2 }}>
-                  ⚠ {error}
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+    <div>
+      Profile Page Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vel
+      quos porro debitis sapiente cumque eveniet dignissimos temporibus, dolore
+      nemo deleniti voluptatem eos expedita quisquam autem ipsam sunt ea
+      consequatur fugit nam aspernatur sint facilis modi cupiditate! Voluptate
+      labore magni aspernatur aperiam modi dignissimos, omnis quibusdam hic
+      voluptatibus veritatis voluptas non! Exercitationem sit ab in consequuntur
+      voluptas adipisci distinctio ducimus quaerat! Exercitationem praesentium
+      veniam rem. Natus maiores, dolor nulla officiis doloribus labore est
+      debitis quod porro ipsa, quibusdam error consectetur nesciunt dolorem
+      atque veniam dolores aut iste eveniet molestias aspernatur esse dolorum
+      numquam. Fugit dolorem eaque quam quos iusto, nisi quaerat repellendus
+      dolor laboriosam hic ea voluptas voluptatum enim porro dolore explicabo
+      ullam laudantium ratione ipsum quisquam facilis, quidem reprehenderit
+      ipsa. Veniam autem praesentium blanditiis voluptas consequatur facilis
+      asperiores, modi recusandae rerum, aspernatur omnis cumque beatae
+      officiis, atque aliquam voluptatum! Sint molestiae illum architecto sed
+      optio voluptas voluptatum voluptatibus necessitatibus, officia ut ea autem
+      quod quos totam ducimus aut delectus fuga blanditiis vitae omnis. Hic,
+      provident. Fugit sapiente facilis maxime deserunt, eos adipisci laudantium
+      possimus id optio eum unde tempore pariatur quibusdam quidem distinctio
+      dicta magnam numquam! Nostrum eligendi culpa repellat est magni optio
+      maxime! Dolor autem necessitatibus aperiam eaque qui nemo soluta, eum
+      inventore. Adipisci ex neque cumque veniam voluptatum sint saepe, illo qui
+      sit autem tempore totam quae quod labore quidem. Aliquam veniam eum,
+      aperiam iusto maxime eius facere tenetur expedita veritatis, assumenda
+      quidem iste consequatur laborum quis mollitia. Quia repellat dolorum
+      veritatis amet aut alias rerum et? Ipsum?
     </div>
   );
 }
 
-export default ProfileCard;
+export default Profile;

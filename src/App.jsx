@@ -2,12 +2,12 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ProtectedLayout } from "./layouts/ProtectedLayout.jsx";
 import HomePage from "./pages/Home.jsx";
-import DashBoardApp from "./pages/Dashboard.jsx";
 import OAuthSuccess from "./pages/OAuthSuccess.jsx";
 import ProfileCard from "./pages/Profile.jsx";
 import SearchUser from "./pages/SearchUser.jsx";
 import Groups from "./pages/Groups.jsx";
-import Activity from "./pages/Activity.jsx";
+import Friends from "./pages/Friends.jsx";
+import Notifications from "./pages/Notifications.jsx";
 
 function App() {
   return (
@@ -18,11 +18,10 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/oauth-success" element={<OAuthSuccess />} />
             <Route element={<ProtectedLayout />}>
-              <Route path="/dashboard" element={<DashBoardApp />} />
               <Route path="/profile" element={<ProfileCard />} />
               <Route path="/groups" element={<Groups />} />
-              <Route path="/:username" element={<SearchUser />} />
-              <Route path="/group/:groupId" element={<Activity />} />
+              <Route path="/friends" element={<Friends />} />
+              <Route path="/notifications" element={<Notifications />} />
             </Route>
           </Routes>
         </AuthProvider>

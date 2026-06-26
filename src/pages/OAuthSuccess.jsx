@@ -14,7 +14,7 @@ const OAuthSuccess = () => {
     const loginUser = async () => {
       if (token) {
         await handleGoogleCallback(token);
-        navigate("/dashboard");
+        navigate("/");
       } else {
         navigate("/");
       }
