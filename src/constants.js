@@ -1,6 +1,6 @@
 export const NAV_LINKS = ["Features", "How It Works", "Use Cases", "FAQ"];
 
-export const FEATURES = [
+export const VASAVI = [
   {
     icon: "⚡",
     title: "Instant Bill Splitting",
