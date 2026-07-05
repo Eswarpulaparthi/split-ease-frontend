@@ -1,7 +1,7 @@
-import React from "react";
+import GroupsComponent from "../components/GroupsComponent.jsx";
 
 function Groups() {
-  return <div>Groups Page</div>;
+  return <GroupsComponent />;
 }
 
 export default Groups;

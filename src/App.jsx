@@ -6,6 +6,7 @@ import OAuthSuccess from "./pages/OAuthSuccess.jsx";
 import ProfileCard from "./pages/Profile.jsx";
 import SearchUser from "./pages/SearchUser.jsx";
 import Groups from "./pages/Groups.jsx";
+import GroupDetail from "./pages/GroupDetail.jsx";
 import Friends from "./pages/Friends.jsx";
 import Notifications from "./pages/Notifications.jsx";
 
@@ -20,6 +21,7 @@ function App() {
             <Route element={<ProtectedLayout />}>
               <Route path="/profile" element={<ProfileCard />} />
               <Route path="/groups" element={<Groups />} />
+              <Route path="/groups/:id" element={<GroupDetail />} />
               <Route path="/friends" element={<Friends />} />
               <Route path="/notifications" element={<Notifications />} />
             </Route>
