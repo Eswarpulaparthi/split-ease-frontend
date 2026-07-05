@@ -38,8 +38,21 @@ function formatDate(iso = "") {
   });
 }
 
+// Some endpoints on this API return a bare array, others wrap it in
+// { friends: [...] } or { user: { friends: [...] } }. Normalize defensively
+// so a shape change or an error payload never reaches .map() as a non-array.
+function toFriendsArray(data) {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.friends)) return data.friends;
+  if (Array.isArray(data?.user?.friends)) return data.user.friends;
+  return [];
+}
+
 function Friends() {
   const [userFriends, setUserFriends] = useState([]);
+  const [friendsLoading, setFriendsLoading] = useState(true);
+  const [friendsError, setFriendsError] = useState(false);
+
   const [searchUserFriend, setSearchUserFriend] = useState("");
   const [searchUserFriendArr, setSearchUserFriendArr] = useState([]);
   const [query, setQuery] = useState("");
@@ -56,6 +69,8 @@ function Friends() {
 
   useEffect(() => {
     async function fetchUserFriends() {
+      setFriendsLoading(true);
+      setFriendsError(false);
       try {
         const res = await fetch(`${backend_uri}/api/user/${user.username}`, {
           method: "GET",
@@ -64,12 +79,27 @@ function Friends() {
             "Content-Type": "application/json",
           },
         });
-        if (res.ok) {
-          const data = await res.json();
-          setUserFriends(data);
+
+        if (!res.ok) {
+          setFriendsError(true);
+          setUserFriends([]);
+          return;
         }
+
+        const data = await res.json();
+        const friends = toFriendsArray(data);
+
+        if (!Array.isArray(data) && !Array.isArray(data?.friends)) {
+          console.warn("Unexpected /api/user/:username response shape:", data);
+        }
+
+        setUserFriends(friends);
       } catch (error) {
-        console.log(error);
+        console.error("Failed to fetch friends:", error);
+        setFriendsError(true);
+        setUserFriends([]);
+      } finally {
+        setFriendsLoading(false);
       }
     }
     if (user?.username) fetchUserFriends();
@@ -94,10 +124,10 @@ function Friends() {
         );
         if (res.ok) {
           const data = await res.json();
-          setQueryUsers(data);
+          setQueryUsers(Array.isArray(data) ? data : []);
         }
       } catch (error) {
-        console.log(error);
+        console.error("Failed to fetch search suggestions:", error);
       }
     }
     fetchGlobalFriends();
@@ -218,50 +248,64 @@ function Friends() {
         />
       </div>
 
-      <ul
-        className="list-none mt-2 p-0 flex flex-col"
-        aria-label="Friends list"
-      >
-        {displayedFriends.length === 0 && (
-          <li className="text-sm text-gray-400 text-center py-12 px-5">
-            {searchUserFriend
-              ? `No friends found for "${searchUserFriend}"`
-              : "No friends yet"}
-          </li>
-        )}
-        {displayedFriends.map((friend) => {
-          const { bg, text } = avatarColor(friend._id ?? friend.id ?? "");
-          return (
-            <li
-              key={friend._id ?? friend.id}
-              className="flex items-center gap-3 px-5 py-3 cursor-pointer
-                         border-b border-black/[0.05] last:border-b-0
-                         active:bg-gray-50 md:hover:bg-gray-50
-                         transition-colors duration-100"
-            >
-              {/* avatar */}
-              <div
-                className="w-11 h-11 rounded-full flex items-center justify-center
-                           text-[13px] font-semibold flex-shrink-0 tracking-wide"
-                style={{ background: bg, color: text }}
-                aria-hidden="true"
-              >
-                {initials(friend.name ?? friend.username)}
-              </div>
+      {friendsLoading && (
+        <div className="flex justify-center py-12">
+          <div className="w-5 h-5 rounded-full border-2 border-orange-500 border-t-transparent animate-spin" />
+        </div>
+      )}
 
-              {/* info */}
-              <div className="flex flex-col gap-[3px] flex-1 min-w-0">
-                <span className="text-[15px] font-medium text-[#111] truncate">
-                  {friend.name ?? friend.username}
-                </span>
-                <span className="text-xs text-gray-400">
-                  {formatDate(friend.createdAt)}
-                </span>
-              </div>
+      {!friendsLoading && friendsError && (
+        <div className="mx-5 mt-2 bg-red-50 border border-red-100 rounded-xl px-4 py-3 text-red-400 text-sm text-center">
+          Couldn't load friends. Pull to refresh or try again later.
+        </div>
+      )}
+
+      {!friendsLoading && !friendsError && (
+        <ul
+          className="list-none mt-2 p-0 flex flex-col"
+          aria-label="Friends list"
+        >
+          {displayedFriends.length === 0 && (
+            <li className="text-sm text-gray-400 text-center py-12 px-5">
+              {searchUserFriend
+                ? `No friends found for "${searchUserFriend}"`
+                : "No friends yet"}
             </li>
-          );
-        })}
-      </ul>
+          )}
+          {displayedFriends.map((friend) => {
+            const { bg, text } = avatarColor(friend._id ?? friend.id ?? "");
+            return (
+              <li
+                key={friend._id ?? friend.id}
+                className="flex items-center gap-3 px-5 py-3 cursor-pointer
+                           border-b border-black/[0.05] last:border-b-0
+                           active:bg-gray-50 md:hover:bg-gray-50
+                           transition-colors duration-100"
+              >
+                {/* avatar */}
+                <div
+                  className="w-11 h-11 rounded-full flex items-center justify-center
+                             text-[13px] font-semibold flex-shrink-0 tracking-wide"
+                  style={{ background: bg, color: text }}
+                  aria-hidden="true"
+                >
+                  {initials(friend.name ?? friend.username)}
+                </div>
+
+                {/* info */}
+                <div className="flex flex-col gap-[3px] flex-1 min-w-0">
+                  <span className="text-[15px] font-medium text-[#111] truncate">
+                    {friend.name ?? friend.username}
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    {formatDate(friend.createdAt)}
+                  </span>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       {dialogOpen && (
         <div
