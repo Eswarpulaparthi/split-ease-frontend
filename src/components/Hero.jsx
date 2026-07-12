@@ -9,9 +9,6 @@ export default function Hero() {
     >
       <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
         <div className="w-full lg:w-1/2 text-center lg:text-left">
-          {/* <span className="inline-block px-3 py-1.5 bg-orange-100 text-orange-600 rounded-full text-xs mb-5 sm:mb-6">
-            ✦ Trusted by 2M+ users worldwide
-          </span> */}
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif leading-tight text-stone-900 mb-4 sm:mb-5">
             Split expenses.
             <br />
@@ -23,7 +20,7 @@ export default function Hero() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 mb-4 items-center lg:items-start">
             <button
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate("/groups")}
               className="w-full sm:w-auto text-center bg-orange-600 hover:bg-orange-700 text-white px-7 py-3 rounded-xl text-base no-underline transition-all hover:-translate-y-0.5"
             >
               Start splitting for free
